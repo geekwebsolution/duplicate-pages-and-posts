@@ -1,0 +1,35 @@
+span.note {
+    display: block;
+    font-weight: 376;
+    padding-top: 5px;
+    font-style: italic;
+}
+
+#major-publishing-actions div#duplicate-this-action {
+    text-align: right;
+    margin-bottom: 15px;
+    margin-top: 10px;
+}
+
+#major-publishing-actions div#duplicate-this-action .button {
+    width: 100%;
+    text-align: center;
+}
+
+.gwdp-admin-bar-icon {
+    line-height: 1!important;
+}
+
+.gwdp-admin-bar-icon::before {
+    font-family: dashicons;
+    content: '\f105';
+    top: 4px;
+    position: relative;
+    color: rgba(240,245,250,.6);
+    margin-right: 3px;
+    font-size: 18px;
+}
+
+li:hover .gwdp-admin-bar-icon::before{
+    color: #72aee6;
+}
