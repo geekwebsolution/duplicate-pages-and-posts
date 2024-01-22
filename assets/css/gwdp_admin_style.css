@@ -5,16 +5,16 @@ span.note {
     font-style: italic;
 }
 
-#major-publishing-actions div#duplicate-this-action {
+#major-publishing-actions div#gwdp-duplicate-this-action {
     text-align: right;
     margin-bottom: 15px;
     margin-top: 10px;
 }
 
-#major-publishing-actions div#duplicate-this-action .button {
+/* #major-publishing-actions div#gwdp-duplicate-this-action .button {
     width: 100%;
     text-align: center;
-}
+} */
 
 .gwdp-admin-bar-icon {
     line-height: 1!important;
@@ -32,4 +32,12 @@ span.note {
 
 li:hover .gwdp-admin-bar-icon::before{
     color: #72aee6;
+}
+
+.gwdp-row td label {
+    line-height: 2.0;
+}
+
+.gwdp-row td label input[type="checkbox"] {
+    margin-right: 8px;
 }

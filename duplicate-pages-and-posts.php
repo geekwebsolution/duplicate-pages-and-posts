@@ -4,12 +4,13 @@ Plugin Name: Duplicate Pages and Posts
 Description: A plugin to add Duplicate Page, post and custom post
 Author: Geek Code Lab
 Author URI: https://geekcodelab.com/
-Version: 1.4
+Version: 1.5
+Text Domain: duplicate-pages-and-posts
 */
 
 if(!defined('ABSPATH')) exit;
 
-define("GWDP_BUILD",1.4);
+define("GWDP_BUILD",1.5);
 
 if(!defined("GWDP_PLUGIN_DIR_PATH"))
 	
@@ -22,10 +23,10 @@ if(!defined( "GWDP_PLUGIN_URL"))
 $plugin = plugin_basename(__FILE__);
 add_filter( "plugin_action_links_$plugin", 'gwdp_add_plugin_link');
 function gwdp_add_plugin_link( $links ) {
-	$support_link = '<a href="https://geekcodelab.com/contact/" target="_blank" >' . __( 'Support' ) . '</a>';
+	$support_link = '<a href="https://geekcodelab.com/contact/" target="_blank" >' . __( 'Support', 'duplicate-pages-and-posts' ) . '</a>';
 	array_unshift( $links, $support_link );
 
-	$settings = '<a href="'. admin_url('options-general.php?page=options-duplicate-page-post') .'">' . __( 'Settings' ) . '</a>';
+	$settings = '<a href="'. admin_url('options-general.php?page=options-duplicate-page-post') .'">' . __( 'Settings', 'duplicate-pages-and-posts' ) . '</a>';
 	array_unshift( $links, $settings );
 
 	return $links;
@@ -35,10 +36,10 @@ require_once( GWDP_PLUGIN_DIR_PATH .'functions.php' );
 add_action('admin_action_gwdp_duplicate_post_action', 'gwdp_duplicate_post_callback');
 add_filter('post_row_actions', 'gwdp_duplicate_post_link', 10, 2);
 add_filter('page_row_actions','gwdp_duplicate_post_link', 10, 2);
-add_action( 'post_submitbox_start', 'gwdp_edit_post_link_callback' );
+add_action('post_submitbox_start', 'gwdp_edit_post_link_callback' );
 add_action('admin_bar_menu', 'gwdp_admin_bar_link_callback', 80);
 add_action('admin_menu', 'gwdp_duplicate_post_options_callback');
-add_action( 'admin_print_styles', 'gwdp_admin_style' );
+add_action('admin_enqueue_scripts', 'gwdp_admin_scripts');
 
 register_activation_hook( __FILE__, 'gwdp_plugin_duplicate_page' );
 
@@ -53,10 +54,10 @@ function gwdp_plugin_duplicate_page(){
 		'gwdp_post_link_text' => 'Duplicate This'
 	);
 	$gwdp_options= (gwdp_allowed_options_callback() !== null);
-		if($gwdp_options &&  current_user_can( 'manage_options' ))
-		{
-			add_option('gwdp_allowed_options', $gwdp_default_options);
-		}
+	if($gwdp_options &&  current_user_can( 'manage_options' ))
+	{
+		add_option('gwdp_allowed_options', $gwdp_default_options);
+	}
 }
 
 
@@ -147,19 +148,96 @@ function gwdp_duplicate_post_callback(){
 	}
 }
 
-/* Enque Styles Admin Side */
-function gwdp_admin_style() {
+/**
+ * Check if user have access of duplicate post link
+ */
+function gwdp_have_access_of_duplicate_post() {
+	$gwdp_options = get_option('gwdp_allowed_options');
+	$selected_role_type = "";	if(isset($gwdp_options['gwdp_role_type'])) { $selected_role_type = $gwdp_options['gwdp_role_type']; }
+	$selected_post_type = "";   if(isset($gwdp_options['gwdp_post_type'])) { $selected_post_type = $gwdp_options['gwdp_post_type']; }
+	$selected_shown_link = "";  if(isset($gwdp_options['gwdp_shown_link'])) { $selected_shown_link = $gwdp_options['gwdp_shown_link']; }
 
-	if(is_admin()){
-		$css = GWDP_PLUGIN_URL . '/assets/css/gwdp_admin_style.css';
-		wp_enqueue_style( 'gwdp_admin_style', $css, array(), GWDP_BUILD);		
+	
+	if(!in_array( "to_post_edit", $selected_shown_link ))	return false;
+
+	// echo "first  --- "; die;
+
+	$current_screen = get_current_screen();
+
+	$allow_role = $allow_post = false;
+	$user = wp_get_current_user();
+
+	// echo '<pre>'; print_r( $current_screen ); echo '</pre>';
+
+	if ( isset($current_screen->is_block_editor) && $current_screen->is_block_editor == 1 ) {
+		// echo "first  ";
+		if(isset($selected_role_type) && !empty($selected_role_type)) {
+			// echo "two  ";
+			if(isset($user->roles) && !empty($user->roles)) {
+				// echo "three  ";
+				foreach ($user->roles as $current_role) {
+					
+					if ( in_array( $current_role, $selected_role_type ) ) {
+						$allow_role = true;
+					}
+				}
+			}
+		}
+
+		// var_dump($allow_role); die;
+
+		if($allow_role) {
+			if(isset($selected_post_type) && !empty($selected_post_type)) {
+				
+				if(isset($current_screen->post_type) && !empty($current_screen->post_type) && in_array($current_screen->post_type, $selected_post_type)) {
+					$allow_post = true;
+				}
+			}
+		}
 	}
+
+	// var_dump($allow_role);
+
+	if($allow_post)		return true;
+
+	return false;
 }
 
-/* Add submenu page */
-function gwdp_duplicate_post_options_callback()
-{
-    add_options_page('Duplicate Page & Post', 'Duplicate Page & Post', 'manage_options', 'options-duplicate-page-post', 'gwdp_duplicate_page_settings');
+/* Enque Styles Admin Side */
+function gwdp_admin_scripts( $hook ) {
+
+	$css = GWDP_PLUGIN_URL . '/assets/css/gwdp_admin_style.css';
+	wp_enqueue_style( 'gwdp_admin_style', $css, array(), GWDP_BUILD);
+
+	if( gwdp_is_gutenberg_editor() ) {
+		if( gwdp_have_access_of_duplicate_post() ) {
+			global $post;
+
+			$handle = "gwdp_duplicate_post_edit_script";
+			wp_register_script(
+				$handle,
+				GWDP_PLUGIN_URL . '/assets/js/gwdp-post-edit.js',
+				[
+					'wp-components',
+					'wp-element',
+					'wp-i18n',
+					'wp-edit-post'
+				],
+				GWDP_BUILD,
+				true
+			);
+			wp_enqueue_script( $handle );
+
+			wp_localize_script(
+				$handle,
+				'gwdpObj',
+				array(
+					'duplicatepostlink' => admin_url('admin.php?action=gwdp_duplicate_post_action&amp;post='.$post->ID.'&amp;nonce='.wp_create_nonce( 'gwdp-duplicate-page-'.$post->ID )),
+					'duplicatepostlinktext' => !empty($gwdp_options['gwdp_post_link_text']) ? $gwdp_options['gwdp_post_link_text'] : 'Duplicate this'
+				)
+			);
+		}
+	}
 }
 
 /* Add the duplicate link to -- all list screen */
@@ -190,11 +268,11 @@ function gwdp_duplicate_post_link($actions, $post){
 function gwdp_edit_post_link_callback(){	
 	global $post;
 	$gwdp_options=gwdp_allowed_options_callback();
-	$selected_link_text = !empty($gwdp_options['gwdp_post_link_text']) ? $gwdp_options['gwdp_post_link_text'] : 'Duplicate this';
+	$selected_link_text = !empty($gwdp_options['gwdp_post_link_text']) ? esc_attr($gwdp_options['gwdp_post_link_text'],"duplicate-pages-and-posts") : esc_attr('Duplicate this','duplicate-pages-and-posts');
 	$selected_user_role = !empty($gwdp_options['gwdp_role_type']) ? $gwdp_options['gwdp_role_type'] : array(); 
 	$user = wp_get_current_user();
 	$user_role = $user->roles;
-	$html = '<div id="duplicate-this-action">';
+	$html = '<div id="gwdp-duplicate-this-action">';
 	$html .= '<div id="export-action">';
 	$html .= '<a class="button button-primary button-large" href="admin.php?action=gwdp_duplicate_post_action&amp;post='.$post->ID.'&amp;nonce='.wp_create_nonce( 'gwdp-duplicate-page-'.$post->ID ).'" title="'.$selected_link_text.'" rel="permalink">'. $selected_link_text .'</a>';
 	$html .= '</div>';
@@ -286,12 +364,29 @@ function gwdp_front_style() {
 }
 add_action('wp_head', 'gwdp_front_style');
 
+/* Add submenu page */
+function gwdp_duplicate_post_options_callback()
+{
+    add_options_page('Duplicate Page & Post', 'Duplicate Page & Post', 'manage_options', 'options-duplicate-page-post', 'gwdp_duplicate_page_settings');
+}
+
 /* Include options file */
 function gwdp_duplicate_page_settings()
 {
     if(!current_user_can('manage_options') ){
-		wp_die( __('You do not have sufficient permissions to access this page.') );
+		wp_die( __('You do not have sufficient permissions to access this page.', 'duplicate-pages-and-posts') );
 	}
     include( GWDP_PLUGIN_DIR_PATH . 'options.php' );
 }
 
+function gwdp_is_gutenberg_editor() {
+    if( function_exists( 'is_gutenberg_page' ) && is_gutenberg_page() ) { 
+        return true;
+    }   
+    
+    $current_screen = get_current_screen();
+    if ( method_exists( $current_screen, 'is_block_editor' ) && $current_screen->is_block_editor() ) {
+        return true;
+    }
+    return false;
+}
