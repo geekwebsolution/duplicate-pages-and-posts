@@ -2,10 +2,10 @@
 Contributors: rajkakadiya, rvadhel
 Donate link: https://paypal.me/rvadhel
 Tags:clone page, clone post, duplicate page, duplicate post, duplicate custom post.
-Requires PHP: 5.2.4
-Requires at least: 3.0.1
-Tested up to: 6.2.2
-Stable tag: 1.4
+Requires PHP: 7.4
+Requires at least: 6.3
+Tested up to: 6.5
+Stable tag: 1.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -52,6 +52,9 @@ After Plugin Active go to Settings-> Duplicate Page & Post.
 6. Duplicate post link at admin bar on front page
 
 == Changelog ==
+
+= 1.5 =
+*Fixed "Duplicate post" link with Gutenberg editor
 
 = 1.4 =
 *Tested up to wp version 6.2.2

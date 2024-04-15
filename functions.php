@@ -17,9 +17,9 @@ function gwdp_allowed_options_callback(){
 
 /* error message */
 function gwdp_failure_option_msg($msg){	
-	return '<div class="notice notice-error pwcgk-error-msg is-dismissible"><p>' . $msg . '</p></div>';			
+	return '<div class="notice notice-error pwcgk-error-msg is-dismissible"><p>' . __($msg,'duplicate-pages-and-posts') . '</p></div>';
 }
 /* Success message */
 function  gwdp_success_option_msg($msg){	
-	return '<div class="notice notice-success pwcgk-success-msg is-dismissible"><p>'. $msg . '</p></div>';			
+	return '<div class="notice notice-success pwcgk-success-msg is-dismissible"><p>'. __($msg,'duplicate-pages-and-posts') . '</p></div>';
 }

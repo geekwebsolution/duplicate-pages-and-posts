@@ -71,8 +71,8 @@ unset($post_types['attachment']);
 global $wp_roles;
 $roles=$wp_roles->role_names; ?>
 
-<div class="gwdp_wrap">
-    <h2>Duplicate Page Settings</h2>
+<div class="wrap">
+    <h1><?php echo esc_html('Duplicate Page Settings','duplicate-pages-and-posts'); ?></h1>
     <?php
         if ( isset( $successmsg ) ) 
         {
@@ -86,31 +86,33 @@ $roles=$wp_roles->role_names; ?>
     
     <div class="gwdp_inner">
         <form method="post">
-            <table class="form-table">
+            <table class="form-table gwdp-form">
                 <tbody>
-                    <tr valign="top"><th scope="row">Allowed User Roles</th>
+                    <tr valign="top" class="gwdp-row"><th scope="row"><?php echo esc_html('Allowed User Roles','duplicate-pages-and-posts'); ?></th>
                         <td>
                             <?php if(count($roles)>0 && !empty($roles)){
                                 foreach($roles as $key =>$value){ ?>
+                                <label>
                                     <input type="checkbox" name="role_type[]" value="<?php echo esc_attr($key); ?>"
-                                        <?php if(!empty($selected_role_type)){if(in_array($key,$selected_role_type)){ echo esc_attr("checked");}} ?>><?php echo esc_html($value); ?><br>
+                                        <?php if(!empty($selected_role_type)){if(in_array($key,$selected_role_type)){ echo esc_attr("checked");}} ?>><?php echo esc_html($value); ?></label><br>
                                     <?php
                                 }
                             } ?>
-                            <span class="note">Allow User roles to access duplicate link.</span>
+                            <span class="note"><?php echo esc_html('Allow User roles to access duplicate link.','duplicate-pages-and-posts'); ?></span>
                         </td>
                     </tr>
 
-                    <tr valign="top"><th scope="row">Allowed Post types</th>                   
+                    <tr valign="top" class="gwdp-row"><th scope="row"><?php echo esc_html('Allowed Post types','duplicate-pages-and-posts'); ?></th>                   
                         <td>
                             <?php if(count($post_types)>0 && !empty($post_types)){
                                 foreach($post_types as $post_type){ ?>
+                                    <label>
                                     <input type="checkbox" name="post_type[]" value="<?php echo esc_attr($post_type); ?>"
-                                        <?php if(!empty($selected_post_type)){if(in_array($post_type,$selected_post_type)){ echo esc_attr("checked");}} ?>><?php echo esc_html(ucfirst($post_type)); ?><br>
+                                        <?php if(!empty($selected_post_type)){if(in_array($post_type,$selected_post_type)){ echo esc_attr("checked");}} ?>><?php echo esc_html(ucfirst($post_type)); ?></label><br>
                                     <?php
                                 }                                
                             } ?>
-                            <span class="note">Allow Post types to access duplicate link.</span>
+                            <span class="note"><?php echo esc_html('Allow Post types to access duplicate link.','duplicate-pages-and-posts'); ?></span>
                         </td>
                     </tr>
 
@@ -121,21 +123,22 @@ $roles=$wp_roles->role_names; ?>
                             'to_admin_bar' => 'On Admin Bar Post View Page'
                         );
                     ?>
-                    <tr valign="top"><th scope="row">Where to show Duplicate Page Link</th>
+                    <tr valign="top" class="gwdp-row"><th scope="row"><?php echo esc_html('Where to show Duplicate Page Link','duplicate-pages-and-posts'); ?></th>
                         <td>
                             <?php if(count($where_show_links)>0 && !empty($where_show_links)){
                                 foreach($where_show_links as $key => $value){ ?>
+                                    <label>
                                     <input type="checkbox" name="shown_link[]" value="<?php echo esc_attr($key); ?>"
-                                        <?php if(!empty($selected_shown_link)){if(in_array($key,$selected_shown_link)){ echo esc_attr('checked');}} ?>><?php echo esc_html(ucfirst($value)); ?><br>
+                                        <?php if(!empty($selected_shown_link)){if(in_array($key,$selected_shown_link)){ echo esc_attr('checked');}} ?>><?php echo esc_html(ucfirst($value)); ?></label><br>
                                     <?php
                                 }
                             }?>
-                            <span class="note">Check where to shown duplicate link.</span>
+                            <span class="note"><?php echo esc_html('Check where to shown duplicate link.','duplicate-pages-and-posts'); ?></span>
                         </td>
                     </tr>
 
-                    <tr valign="top">
-                        <th scope="row">Duplicate Post Status</th>
+                    <tr valign="top" class="gwdp-row">
+                        <th scope="row"><?php echo esc_html('Duplicate Post Status','duplicate-pages-and-posts'); ?></th>
                         <td>							
                             <select name="duplicate_post_status" >
                                 <option value="draft" <?php if ($selected_post_status == 'draft') echo esc_attr('selected="selected"'); ?>><?php _e('Draft'); ?></option>
@@ -143,24 +146,24 @@ $roles=$wp_roles->role_names; ?>
                                 <option value="private" <?php if ($selected_post_status == 'private') echo esc_attr('selected="selected"'); ?>><?php _e('Private'); ?></option>
                                 <option value="pending" <?php if ($selected_post_status == 'pending') echo esc_attr('selected="selected"'); ?>><?php _e('Pending'); ?></option>
                             </select>
-                            <span class="note">Please select any post status you want to assign for duplicate post. Default: <strong>Draft</strong></span>
+                            <span class="note"><?php echo esc_html('Please select any post status you want to assign for duplicate post. Default:','duplicate-pages-and-posts'); ?> <strong>Draft</strong></span>
                         </td>                    
                     </tr>
 
-                    <tr valign="top">
-                        <th scope="row">Redirect after click on Link</th>
+                    <tr valign="top" class="gwdp-row">
+                        <th scope="row"><?php echo esc_html('Redirect after click on Link','duplicate-pages-and-posts'); ?></th>
                         <td>
                             <select name="duplicate_post_redirect">
                                 <option value="to_list_post" <?php if ($selected_post_redirect == 'to_list_post') echo esc_attr('selected="selected"'); ?>><?php _e('To All Posts List'); ?></option>
                                 <option value="to_edit_post" <?php if ($selected_post_redirect == 'to_edit_post') echo esc_attr('selected="selected"'); ?>><?php _e('To Edit Post'); ?></option>
                                 <option value="to_front_post" <?php if ($selected_post_redirect == 'to_front_post') echo esc_attr('selected="selected"'); ?>><?php _e('To Front Post'); ?></option>
                             </select>
-                            <span class="note">Please select any post redirection, redirect you to selected after click on duplicate this link. Default: <strong>To current list</strong></span>
+                            <span class="note"><?php echo esc_html('Please select any post redirection, redirect you to selected after click on duplicate this link. Default:','duplicate-pages-and-posts'); ?> <strong>To current list</strong></span>
                         </td>
                     </tr>
 
-                    <tr valign="top">
-                        <th scope="row">Duplicate Post Author</th>
+                    <tr valign="top" class="gwdp-row">
+                        <th scope="row"><?php echo esc_html('Duplicate Post Author','duplicate-pages-and-posts'); ?></th>
                         <?php $users = get_users(); ?>
                         <td>
                             <select name="duplicate_post_author">
@@ -173,31 +176,31 @@ $roles=$wp_roles->role_names; ?>
                                 <?php 
                                 } ?>
                             </select>
-                            <span class="note">Please select any post author you want to assign for duplicate post. Default: <strong>Current User</strong></span>
+                            <span class="note"><?php echo esc_html('Please select any post author you want to assign for duplicate post. Default:','duplicate-pages-and-posts'); ?> <strong>Current User</strong></span>
                         </td>
                     </tr>
 
-                    <tr valign="top">
-                        <th scope="row">Duplicate Post Link Text</th>
+                    <tr valign="top" class="gwdp-row">
+                        <th scope="row"><?php echo esc_html('Duplicate Post Link Text','duplicate-pages-and-posts'); ?></th>
                         <td>
                             <input type="text" name="post_link_text" placeholder="Duplicate This" value="<?php if(!empty($post_link_text)) echo esc_attr($post_link_text); ?>">
-                            <span class="note">Text for duplicate post link. Default: <strong>To current list</strong></span>
+                            <span class="note"><?php echo esc_html('Text for duplicate post link. Default:','duplicate-pages-and-posts'); ?> <strong>To current list</strong></span>
                         </td>
                     </tr>
 
-                    <tr valign="top">
-                        <th scope="row">Duplicate Post Prefix</th>
+                    <tr valign="top" class="gwdp-row">
+                        <th scope="row"><?php echo esc_html('Duplicate Post Prefix','duplicate-pages-and-posts'); ?></th>
                         <td>
                             <input type="text" name="post_link_prefix" value="<?php if(!empty($post_link_prefix))  echo esc_attr($post_link_prefix); ?>">
-                            <span class="note">Add a prefix to duplicate or clone post e.g. <strong>Copy, </strong><strong>Clone</strong> etc. It will show before title.</span>
+                            <span class="note"><?php echo esc_html('Add a prefix to duplicate or clone post e.g.','duplicate-pages-and-posts'); ?> <strong>Copy, </strong><strong>Clone</strong> etc. <?php echo esc_html('It will show before title.','duplicate-pages-and-posts'); ?></span>
                         </td>
                     </tr>
 
-                    <tr valign="top">
-                        <th scope="row">Duplicate Post Suffix</th>
+                    <tr valign="top" class="gwdp-row">
+                        <th scope="row"><?php echo esc_html('Duplicate Post Suffix','duplicate-pages-and-posts'); ?></th>
                         <td>
                             <input type="text" name="post_link_suffix" value="<?php if(!empty($post_link_suffix)) echo esc_attr($post_link_suffix); ?>">
-                            <span class="note">Add a suffix to duplicate or clone post e.g. <strong>Copy, </strong><strong>Clone</strong> etc. It will show after title.</span>
+                            <span class="note"><?php echo esc_html('Add a suffix to duplicate or clone post e.g.','duplicate-pages-and-posts'); ?> <strong>Copy, </strong><strong>Clone</strong> etc. <?php echo esc_html('It will show after title.','duplicate-pages-and-posts'); ?></span>
                         </td>
                     </tr>
                 </tbody>
