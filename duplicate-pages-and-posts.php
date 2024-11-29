@@ -20,6 +20,15 @@ if(!defined( "GWDP_PLUGIN_URL"))
 	
 	define( "GWDP_PLUGIN_URL",plugins_url().'/'.basename(dirname(__FILE__)));
 
+if (!defined("GWDP_PLUGIN_BASENAME"))
+define("GWDP_PLUGIN_BASENAME", plugin_basename(__FILE__));
+
+if (!defined("GWDP_PLUGIN_DIR"))
+	define("GWDP_PLUGIN_DIR", plugin_basename(__DIR__));
+
+if (!defined("GWDP_PLUGIN_DIR_PATH"))
+define("GWDP_PLUGIN_DIR_PATH", plugin_dir_path(__FILE__));
+
 $plugin = plugin_basename(__FILE__);
 add_filter( "plugin_action_links_$plugin", 'gwdp_add_plugin_link');
 function gwdp_add_plugin_link( $links ) {
@@ -33,6 +42,8 @@ function gwdp_add_plugin_link( $links ) {
 }
 
 require_once( GWDP_PLUGIN_DIR_PATH .'functions.php' );
+require_once(GWDP_PLUGIN_DIR_PATH . 'updater/updater.php');
+
 add_action('admin_action_gwdp_duplicate_post_action', 'gwdp_duplicate_post_callback');
 add_filter('post_row_actions', 'gwdp_duplicate_post_link', 10, 2);
 add_filter('page_row_actions','gwdp_duplicate_post_link', 10, 2);
@@ -40,11 +51,15 @@ add_action('post_submitbox_start', 'gwdp_edit_post_link_callback' );
 add_action('admin_bar_menu', 'gwdp_admin_bar_link_callback', 80);
 add_action('admin_menu', 'gwdp_duplicate_post_options_callback');
 add_action('admin_enqueue_scripts', 'gwdp_admin_scripts');
+add_action('upgrader_process_complete', 'gwdp_updater_activate'); // remove  transient  on plugin  update
+
 
 register_activation_hook( __FILE__, 'gwdp_plugin_duplicate_page' );
 
+
 /* Default Setting on Installation */
 function gwdp_plugin_duplicate_page(){
+	gwdp_updater_activate();
 	$gwdp_default_options = array(
 		'gwdp_role_type' => array('administrator' => 'administrator'),
 		'gwdp_post_type' => array('post' => 'post','page' => 'page'),
