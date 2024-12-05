@@ -19,7 +19,6 @@ function gwdp_updater_utility() {
     return $settings;
 }
 
-// register_activation_hook(__FILE__, 'gwdp_updater_activate');
 function gwdp_updater_activate() {
 
     // Refresh transients

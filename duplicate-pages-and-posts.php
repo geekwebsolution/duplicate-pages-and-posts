@@ -4,13 +4,13 @@ Plugin Name: Duplicate Pages and Posts
 Description: A plugin to add Duplicate Page, post and custom post
 Author: Geek Code Lab
 Author URI: https://geekcodelab.com/
-Version: 1.4.1
+Version: 1.5.0
 Text Domain: duplicate-pages-and-posts
 */
 
 if(!defined('ABSPATH')) exit;
 
-define("GWDP_BUILD","1.4.1");
+define("GWDP_BUILD","1.5.0");
 
 if(!defined("GWDP_PLUGIN_DIR_PATH"))
 	
@@ -25,9 +25,6 @@ define("GWDP_PLUGIN_BASENAME", plugin_basename(__FILE__));
 
 if (!defined("GWDP_PLUGIN_DIR"))
 	define("GWDP_PLUGIN_DIR", plugin_basename(__DIR__));
-
-if (!defined("GWDP_PLUGIN_DIR_PATH"))
-define("GWDP_PLUGIN_DIR_PATH", plugin_dir_path(__FILE__));
 
 $plugin = plugin_basename(__FILE__);
 add_filter( "plugin_action_links_$plugin", 'gwdp_add_plugin_link');
